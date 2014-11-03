@@ -1,0 +1,57 @@
+package com.read;
+
+import java.util.Properties;
+
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.event.MessageCountEvent;
+import javax.mail.event.MessageCountListener;
+
+public class YahooPoller {
+
+	public static void main(String[] args) throws MessagingException {
+		Properties props = System.getProperties();
+		props.setProperty("mail.imap.host", "imap.mail.yahoo.com");
+		props.setProperty("mail.imap.port", "993");
+		props.setProperty("mail.imap.connectiontimeout", "5000");
+		props.setProperty("mail.imap.timeout", "5000");
+		Session session = Session.getDefaultInstance(props, null);
+		Store store = session.getStore("imaps");
+		store.connect("imap.mail.yahoo.com", "<email>", "<pass>");
+		System.out.println(store);
+		Folder inbox = store.getFolder("Inbox");
+		System.out.println(Folder.READ_ONLY);
+		inbox.open(Folder.READ_ONLY);
+		inbox.addMessageCountListener(new MessageCountListener() {
+			@Override
+			public void messagesRemoved(MessageCountEvent arg0) {
+				System.out.println("Message Removed Event fired");
+
+			}
+
+			@Override
+			public void messagesAdded(MessageCountEvent ev) {
+				System.out.println("message listner invoked.");
+
+				Message[] messages = ev.getMessages();
+				System.out.println("Got " + messages.length + " new messages");
+
+				for (int i = 0; i < messages.length; i++) {
+					try {
+						System.out.println("From : " + messages[i].getFrom()[i]);
+						System.out.println("\nSubject : "
+								+ messages[i].getSubject());
+
+					} catch (Exception e) {
+						System.out.println("Error : " + e.getMessage());
+					}
+				}
+			}
+		});
+
+	}
+
+}
