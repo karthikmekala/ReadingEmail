@@ -10,7 +10,7 @@ import javax.mail.Store;
 import javax.mail.event.MessageCountEvent;
 import javax.mail.event.MessageCountListener;
 
-public class YahooPoller {
+public class YahooImap {
 
 	public static void main(String[] args) throws MessagingException {
 		Properties props = System.getProperties();
